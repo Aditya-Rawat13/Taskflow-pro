@@ -12,7 +12,7 @@
 
 ## Live URL
 
-🌐 http://web-production-d4f82.up.railway.app/ ← replace with your deployed URL
+🌐 http://web-production-d4f82.up.railway.app/ 
 
 ---
 

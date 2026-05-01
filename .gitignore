@@ -5,6 +5,8 @@ node_modules/
 # Environment variables — never commit real secrets
 .env
 **/.env
+.env.test
+**/.env.test
 
 # Keep example files
 !.env.example

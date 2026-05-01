@@ -12,7 +12,7 @@
 
 ## Live URL
 
-🌐 **[https://your-app.railway.app](https://your-app.railway.app)** ← replace with your deployed URL
+🌐 http://web-production-d4f82.up.railway.app/ ← replace with your deployed URL
 
 ---
 
@@ -32,16 +32,28 @@
 
 ## Features
 
-- ✅ User registration and login with JWT authentication
-- ✅ Create and manage projects with name and description
-- ✅ Role-Based Access Control: **Admin** (full control) and **Member** (read + limited write)
-- ✅ Invite team members by email and assign roles
-- ✅ Create tasks with title, description, priority, due date, and assignee
-- ✅ Kanban board with four status columns: TODO, IN_PROGRESS, IN_REVIEW, DONE
-- ✅ Personal dashboard with assigned tasks, overdue tasks, stats, and recent projects
-- ✅ Task filtering by status, priority, and assignee
-- ✅ Helmet security headers, CORS origin restriction, and bcrypt password hashing
-- ✅ 23 correctness properties verified with property-based testing (fast-check)
+- User registration and login with JWT authentication
+- Create and manage projects with name and description
+- Role-Based Access Control: **Admin** (full control) and **Member** (read + limited write)
+- Invite team members by email and assign roles
+- Create tasks with title, description, priority, due date, and assignee
+- Kanban board with four status columns: TODO, IN_PROGRESS, IN_REVIEW, DONE
+- Personal dashboard with assigned tasks, overdue tasks, stats, and recent projects
+- Task filtering by status, priority, and assignee
+- Helmet security headers, CORS origin restriction, and bcrypt password hashing
+
+---
+
+## Demo Accounts
+
+Log in with any of these pre-seeded accounts:
+
+| Email | Password | Role |
+|---|---|---|
+| alice@taskflowpro.dev | Password1 | Admin (Project Alpha) |
+| bob@taskflowpro.dev | Password1 | Member/Admin |
+| carol@taskflowpro.dev | Password1 | Member/Admin |
+| david@taskflowpro.dev | Password1 | Member (Project Beta) |
 
 ---
 
@@ -50,7 +62,7 @@
 ### Prerequisites
 
 - Node.js 18+
-- PostgreSQL running locally
+- PostgreSQL running locally (or a remote connection string)
 
 ### 1. Clone the repository
 
@@ -74,7 +86,7 @@ cd ../frontend && npm install
 cp backend/.env.example backend/.env
 ```
 
-Edit `backend/.env`:
+Edit `backend/.env` and fill in your values:
 
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/taskflow_pro"
@@ -82,7 +94,7 @@ JWT_SECRET="replace-with-a-long-random-secret"
 JWT_EXPIRES_IN="7d"
 PORT=3000
 NODE_ENV=development
-FRONTEND_URL="http://localhost:5173"
+FRONTEND_URL="http://localhost:5174"
 ```
 
 **Frontend:**
@@ -94,7 +106,7 @@ cp frontend/.env.example frontend/.env
 Edit `frontend/.env`:
 
 ```env
-VITE_API_BASE_URL="http://localhost:3000/api"
+VITE_API_BASE_URL=http://localhost:3000
 ```
 
 ### 4. Run database migrations
@@ -113,15 +125,6 @@ npx prisma db seed
 
 This creates four demo users, two projects, memberships, and ten tasks.
 
-**Demo credentials:**
-
-| Name | Email | Password | Role |
-|---|---|---|---|
-| Arjun Sharma | arjun.sharma@taskflowpro.dev | Password@123 | Admin — Website Redesign |
-| Priya Mehta | priya.mehta@taskflowpro.dev | Password@123 | Admin — Mobile App v2.0 |
-| Rohan Verma | rohan.verma@taskflowpro.dev | Password@123 | Member — Website Redesign |
-| Sneha Iyer | sneha.iyer@taskflowpro.dev | Password@123 | Member — Mobile App v2.0 |
-
 ### 6. Start the development servers
 
 In one terminal (backend):
@@ -138,7 +141,7 @@ cd frontend
 npm run dev
 ```
 
-Frontend runs at `http://localhost:5173` — API runs at `http://localhost:3000`
+The frontend runs at `http://localhost:5174` and the API at `http://localhost:3000`.
 
 ---
 
@@ -193,50 +196,57 @@ Frontend runs at `http://localhost:5173` — API runs at `http://localhost:3000`
 
 | Action | Admin | Member |
 |---|---|---|
-| View project details | ✅ | ✅ |
-| Update project | ✅ | ❌ |
-| Delete project | ✅ | ❌ |
-| Add member | ✅ | ❌ |
-| Remove member | ✅ | ❌ |
-| Create task | ✅ | ❌ |
-| Update task fields | ✅ | ❌ |
-| Update task status | ✅ | Own tasks only |
-| Delete task | ✅ | ❌ |
-| View tasks and members | ✅ | ✅ |
+| View project details | ✓ | ✓ |
+| Update project | ✓ | ✗ |
+| Delete project | ✓ | ✗ |
+| Add member | ✓ | ✗ |
+| Remove member | ✓ | ✗ |
+| Create task | ✓ | ✗ |
+| Update task fields | ✓ | ✗ |
+| Update task status | ✓ | Own tasks only |
+| Delete task | ✓ | ✗ |
+| View tasks and members | ✓ | ✓ |
 
 ---
 
-## Running Tests
+## Deployment
 
-### Set up the test database
+Deployed on Railway with separate services for backend and frontend.
 
-```sql
-CREATE DATABASE taskflow_pro_test;
+**Backend:** Node.js service with PostgreSQL database  
+**Frontend:** Static site deployment (Vite build)
+
+### Railway Configuration
+
+**Backend Service:**
+- Root Directory: `backend`
+- Build Command: `npm install && npx prisma generate`
+- Start Command: `npx prisma migrate deploy && node src/server.js`
+
+**Environment Variables:**
+```
+DATABASE_URL=<Railway Postgres URL>
+JWT_SECRET=<random secret>
+JWT_EXPIRES_IN=7d
+NODE_ENV=production
+FRONTEND_URL=<your frontend Railway URL>
 ```
 
-### Configure the test environment
+**Frontend Service:**
+- Root Directory: `frontend`
+- Build Command: `npm install && npm run build`
+- Start Command: (auto-detected by Railway)
 
-```bash
-cd backend
-cp .env.test.example .env.test
+**Environment Variables:**
+```
+VITE_API_BASE_URL=<your backend Railway URL>
 ```
 
-Edit `backend/.env.test`:
+---
 
-```env
-TEST_DATABASE_URL="postgresql://user:password@localhost:5432/taskflow_pro_test"
-JWT_SECRET="replace-with-a-long-random-test-secret"
-NODE_ENV=test
-```
+## Author
 
-### Run backend tests
-
-```bash
-cd backend && npx vitest run
-```
-
-### Run frontend tests
-
+Aditya Rawat — [GitHub](https://github.com/Aditya-Rawa
 ```bash
 cd frontend && npx vitest run
 ```

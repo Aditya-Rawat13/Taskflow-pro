@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables — never commit real secrets
+.env
+**/.env
+
+# Keep example files
+!.env.example
+!**/.env.example
+!.env.test.example
+!**/.env.test.example
+
+# Build output
+dist/
+build/
+**/dist/
+**/build/
+
+# Vite cache
+.vite/
+**/.vite/
+
+# Prisma generated client (regenerated on install)
+**/prisma/generated/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test coverage
+coverage/
+**/coverage/
